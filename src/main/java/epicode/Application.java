@@ -21,26 +21,30 @@ public class Application {
         EventsDAO eventsDAO = new EventsDAO(em);
         Random rndm = new Random();
 
+        // Creazione di istanze delle nuove entità e loro salvataggio nel database
         for (int i = 0; i < 20; i++) {
-            eventsDAO.save(new Evento(
+            Evento evento = new Evento(
                     faker.chuckNorris().fact(),
                     LocalDate.of(rndm.nextInt(2023, 2025),
                             rndm.nextInt(1, 13),
                             rndm.nextInt(1, 29)),
                     faker.lorem().fixedString(50),
                     rndm.nextInt(1, 3) == 1 ? TipoEvento.PRIVATO : TipoEvento.PUBBLICO,
-                    rndm.nextInt(1, 1000)));
+                    rndm.nextInt(1, 1000));
+            eventsDAO.save(evento);
         }
 
+        // Test della funzionalità di getById
         Evento found = eventsDAO.getById(6);
         if (found != null)
             System.out.println(found);
-        else System.out.println("Elemento non trovato");
+        else
+            System.out.println("Elemento non trovato");
 
-
+        // Test della funzionalità di delete
         eventsDAO.delete(5);
 
         em.close();
         emf.close();
-   }
+    }
 }
